@@ -1,0 +1,90 @@
+﻿<Window x:Class="Mvvm.Ui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:intrct="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:local="clr-namespace:Mvvm.Ui"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="200" MinHeight="200" MaxHeight="200" Width="600" MinWidth="600" MaxWidth="600">
+
+    <intrct:Interaction.Triggers>
+        <intrct:EventTrigger EventName="Loaded">
+            <intrct:InvokeCommandAction Command="{Binding WindowLoadedCommand}" />
+        </intrct:EventTrigger>
+    </intrct:Interaction.Triggers>
+
+    <Window.Resources>
+        <Style TargetType="xctk:BusyIndicator">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="StackPanel">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+
+    <xctk:BusyIndicator Name="MainBusyIndicator" BusyContent="Window loading...">
+        <UniformGrid Columns="3">
+
+            <xctk:BusyIndicator Name="SimpleBusyIndicator"  BusyContent="Works is underway...">
+                <StackPanel DataContext="{Binding SimpleIndicator}">
+                    <TextBlock Text="Simple indicator" Height="30"/>
+                    <TextBlock Text="Timeout (s)" Height="20"/>
+                    <TextBox Text="{Binding Timeout}" Height="20"/>
+                    <Button Content="Wait timeout" Command="{Binding StartCommand}" Height="20"/>
+                </StackPanel>
+            </xctk:BusyIndicator>
+
+            <xctk:BusyIndicator Name="CancelBusyIndicator">
+                <xctk:BusyIndicator.BusyContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="4">
+                            <TextBlock Text="Works is underway..." HorizontalAlignment="Center" />
+                            <Button Content="Cancel" Click="CancelBusyIndicator_Click"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </xctk:BusyIndicator.BusyContentTemplate>
+                <StackPanel DataContext="{Binding CancelIndicator}">
+                    <TextBlock Text="Cancelable indicator" Height="30"/>
+                    <TextBlock Text="Timeout (s)" Height="20"/>
+                    <TextBox Text="{Binding Timeout}" Height="20"/>
+                    <Button Content="Wait timeout" Command="{Binding StartCommand}" Height="20"/>
+                </StackPanel>
+            </xctk:BusyIndicator>
+
+            <xctk:BusyIndicator Name="ProgressBusyIndicator">
+                <xctk:BusyIndicator.ProgressBarStyle>
+                    <Style TargetType="ProgressBar">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Style>
+                </xctk:BusyIndicator.ProgressBarStyle>
+                <xctk:BusyIndicator.BusyContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="4">
+                            <ProgressBar Height="10"
+                                             Maximum="{Binding Tag.Maximum, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xctk:BusyIndicator}}"                                     
+                                             Value="{Binding Tag.Progress, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xctk:BusyIndicator}}" />
+                            <TextBlock Text="Downloading..." HorizontalAlignment="Center" />
+                            <Button Content="Cancel" Command="{Binding Tag.CancelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xctk:BusyIndicator}}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </xctk:BusyIndicator.BusyContentTemplate>
+                    <StackPanel DataContext="{Binding ProgressIndicator}">
+                        <TextBlock Text="IndicatorWithCancel" Height="30"/>
+                        <TextBlock Text="Timeout (s)" Height="20"/>
+                        <TextBox Text="{Binding Timeout}" Height="20"/>
+                        <Button Content="Wait timeout" Command="{Binding StartCommand}" Height="20"/>
+                </StackPanel>
+
+            </xctk:BusyIndicator>
+
+        </UniformGrid>
+    </xctk:BusyIndicator>
+</Window>
